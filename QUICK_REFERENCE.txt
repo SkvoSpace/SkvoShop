@@ -1,0 +1,108 @@
+```
+╔════════════════════════════════════════════════════════════════════╗
+║                   FASHION STORE DEPLOYMENT CARD                   ║
+║                  https://skvoshop.skvo-space.workers.dev/          ║
+╚════════════════════════════════════════════════════════════════════╝
+
+🎯 DEPLOYMENT TARGET
+┌────────────────────────────────────────────────────────────────────┐
+│ Frontend: https://skvoshop.skvo-space.workers.dev/               
+│ API:      https://skvoshop.skvo-space.workers.dev/api/*          
+│ Admin:    Password = 12345                                        
+└────────────────────────────────────────────────────────────────────┘
+
+📋 QUICK START COMMANDS
+┌────────────────────────────────────────────────────────────────────┐
+│ 1. Install Node.js (v25.9.0+)
+│    Download: https://nodejs.org/dist/v25.9.0/node-v25.9.0-x64.msi
+│    
+│ 2. After Node.js installed, restart PowerShell:
+│    $ npm install
+│                                                                    
+│ 3. Install dependencies:
+│    $ cd client && npm install && npm run build && cd ..
+│    $ cd api && npm install && cd ..
+│                                                                    
+│ 4. Install Wrangler & Authenticate:
+│    $ npm install -g wrangler
+│    $ wrangler auth login
+│                                                                    
+│ 5. Create Database:
+│    $ cd api
+│    $ wrangler d1 create fashion-db
+│    (Copy database_id → paste in api/wrangler.toml)
+│                                                                    
+│ 6. Setup Database:
+│    $ wrangler d1 execute fashion-db --file=./migrations/0001_initial.sql
+│                                                                    
+│ 7. Deploy API:
+│    $ wrangler deploy
+│                                                                    
+│ 8. Deploy Frontend:
+│    $ cd ..
+│    $ wrangler pages deploy client/dist --project-name=skvoshop
+│                                                                    
+│ 9. DONE! Visit: https://skvoshop.skvo-space.workers.dev/
+└────────────────────────────────────────────────────────────────────┘
+
+🔑 CREDENTIALS (Pre-filled)
+┌────────────────────────────────────────────────────────────────────┐
+│ Account ID: 597c1fefe43cf2f788fb8ef4e6eb1e57
+│ Zone ID:    68317604c5ed80ba27381a079839c9fa
+│ API Key:    cfk_tDhT5q9IksjvSonJHrWngP5MteycRNpx3q3j6hTw12bd1667
+└────────────────────────────────────────────────────────────────────┘
+
+📁 IMPORTANT FILES
+┌────────────────────────────────────────────────────────────────────┐
+│ ⭐ CHECKLIST.md              ← START HERE
+│ 📖 DEPLOY_TO_SKVOSHOP.md    ← Full instructions
+│ 🧪 API_TEST.md              ← Testing your API
+│ 📚 README_DEPLOYMENT.md     ← Overview
+│ 🔧 wrangler.toml            ← Already configured
+│ 📝 api/wrangler.toml        ← Update database_id here
+└────────────────────────────────────────────────────────────────────┘
+
+⏱️ TIME TO DEPLOY
+┌────────────────────────────────────────────────────────────────────┐
+│ Node.js Install:     5 min ⏱️
+│ Dependencies:        10 min ⏱️
+│ Cloudflare Auth:     2 min ⏱️
+│ Database Setup:      5 min ⏱️
+│ Deploy API:          2 min ⏱️
+│ Deploy Frontend:     3 min ⏱️
+│ ─────────────────────────────
+│ TOTAL:               ~27 min ⏱️
+└────────────────────────────────────────────────────────────────────┘
+
+✅ DEPLOYMENT CHECKLIST
+┌────────────────────────────────────────────────────────────────────┐
+│ ☐ Node.js installed and restarted PowerShell
+│ ☐ Navigated to: cd c:\skvo_proj\fashion-store
+│ ☐ npm install completed
+│ ☐ Client built: cd client && npm run build
+│ ☐ API dependencies installed: cd api && npm install
+│ ☐ Wrangler installed globally: npm install -g wrangler
+│ ☐ Authenticated: wrangler auth login
+│ ☐ D1 database created: wrangler d1 create fashion-db
+│ ☐ database_id added to wrangler.toml
+│ ☐ Migrations executed
+│ ☐ API deployed: wrangler deploy
+│ ☐ Frontend deployed: wrangler pages deploy
+│ ☐ Testing at: https://skvoshop.skvo-space.workers.dev/
+│ ☐ Admin works: /admin (password: 12345)
+└────────────────────────────────────────────────────────────────────┘
+
+🆘 NEED HELP?
+┌────────────────────────────────────────────────────────────────────┐
+│ Node.js issues?    → Download from nodejs.org, restart PowerShell
+│ Auth fails?        → Make sure Cloudflare account exists
+│ D1 fails?          → Check account_id in wrangler.toml
+│ Deploy fails?      → Run: wrangler whoami (check authentication)
+│ API not working?   → Check migrations ran successfully
+│ Still stuck?       → Read DEPLOY_TO_SKVOSHOP.md
+└────────────────────────────────────────────────────────────────────┘
+
+🚀 YOU'RE READY! START WITH NODE.JS INSTALLATION »
+```
+
+**Print this card or keep it open while deploying!**

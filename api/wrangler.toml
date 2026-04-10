@@ -1,0 +1,17 @@
+name = "skvoshop"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+account_id = "597c1fefe43cf2f788fb8ef4e6eb1e57"
+
+[build]
+command = "npm run build"
+cwd = "./"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "fashion-db"
+database_id = ""
+
+[routes]
+pattern = "skvoshop.skvo-space.workers.dev/*"
+zone_name = "skvo-space.com"

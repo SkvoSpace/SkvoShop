@@ -1,0 +1,23 @@
+{
+  "name": "fashion-store-api",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "tsc",
+    "deploy": "npm run build && wrangler deploy",
+    "db:create": "wrangler d1 create fashion-db",
+    "db:migrate": "wrangler d1 execute fashion-db --file=./migrations/0001_initial.sql",
+    "db:setup": "npm run db:create && npm run db:migrate"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.30.4",
+    "hono": "^4.0.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "drizzle-kit": "^0.20.13",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.82.0"
+  }
+}

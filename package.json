@@ -1,0 +1,26 @@
+{
+  "name": "fashion-store",
+  "version": "1.0.0",
+  "description": "Fashion store on Cloudflare Pages + Workers + D1",
+  "private": true,
+  "workspaces": [
+    "client",
+    "api"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=client & npm run dev --workspace=api",
+    "build": "npm run build --workspace=client && npm run build --workspace=api",
+    "deploy": "npm run deploy:api && npm run deploy:pages",
+    "deploy:api": "cd api && npm run build && wrangler deploy",
+    "deploy:pages": "cd client && npm run build && cd .. && wrangler pages deploy client/dist --project-name=skvoshop",
+    "deploy:all": "npm run build && npm run deploy:api && npm run deploy:pages",
+    "git:init": "git init",
+    "git:add": "git add .",
+    "git:commit": "git commit -m \"Fashion Store - Cloudflare deployment\"",
+    "git:push": "git branch -M main && git remote add origin https://github.com/SkvoSpace/SkvoShop.git && git push -u origin main",
+    "git:setup": "npm run git:init && npm run git:add && npm run git:commit"
+  },
+  "devDependencies": {
+    "wrangler": "^3.82.0"
+  }
+}
