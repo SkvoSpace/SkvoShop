@@ -1,0 +1,8 @@
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
+import { formatPrice } from '../lib/utils';
+import { Trash2 } from 'lucide-react';
+export const CartDrawer = ({ items, onRemove, onCheckout }) => {
+    const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    return (_jsxs("div", { className: "bg-white rounded-lg shadow-lg p-6", children: [_jsx("h2", { className: "text-2xl font-bold mb-6", children: "Your Cart" }), items.length === 0 ? (_jsx("p", { className: "text-gray-600 text-center py-8", children: "Your cart is empty" })) : (_jsxs(_Fragment, { children: [_jsx("div", { className: "space-y-4 mb-6", children: items.map(item => (_jsxs("div", { className: "flex justify-between items-center border-b pb-4", children: [_jsxs("div", { children: [_jsx("h3", { className: "font-semibold", children: item.product.name }), _jsxs("p", { className: "text-gray-600", children: [formatPrice(item.product.price), " x ", item.quantity] })] }), _jsx("button", { onClick: () => onRemove(item.product.id), className: "text-red-500 hover:text-red-700", children: _jsx(Trash2, { size: 20 }) })] }, item.product.id))) }), _jsx("div", { className: "bg-gray-100 p-4 rounded mb-6", children: _jsxs("div", { className: "flex justify-between items-center text-xl font-bold", children: [_jsx("span", { children: "Total:" }), _jsx("span", { className: "text-purple-600", children: formatPrice(total) })] }) }), _jsx("button", { onClick: onCheckout, className: "w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded font-semibold transition", children: "Checkout" })] }))] }));
+};
+//# sourceMappingURL=CartDrawer.js.map

@@ -4,7 +4,6 @@ import { ProductList } from '../components/Admin/ProductList'
 import { Product } from '../types'
 
 export const Admin: React.FC = () => {
-  const context = useContext(AppContext)
   const [password, setPassword] = useState('')
   const [isAuthed, setIsAuthed] = useState(false)
   const [products, setProducts] = useState<Product[]>([])

@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { eq } from 'drizzle-orm'
 import { getDB } from '../db'
+import { products } from '../db/schema'
 
 export const createProductRoutes = (app: Hono) => {
   // GET all products
@@ -10,16 +11,14 @@ export const createProductRoutes = (app: Hono) => {
       const featured = c.req.query('featured')
       const category = c.req.query('category')
 
-      let query = db.select().from(db.products)
+      const query = featured === 'true'
+        ? db.select().from(products).where(eq(products.featured, true))
+        : category && category !== 'all'
+        ? db.select().from(products).where(eq(products.category, category))
+        : db.select().from(products)
 
-      if (featured === 'true') {
-        query = db.select().from(db.products).where(eq(db.products.featured, true))
-      } else if (category && category !== 'all') {
-        query = db.select().from(db.products).where(eq(db.products.category, category))
-      }
-
-      const products = await query
-      return c.json({ data: products })
+      const productsList = await query
+      return c.json({ data: productsList })
     } catch (error) {
       return c.json({ error: 'Failed to fetch products' }, 500)
     }
@@ -30,7 +29,7 @@ export const createProductRoutes = (app: Hono) => {
     try {
       const db = getDB(c.env)
       const id = parseInt(c.req.param('id'))
-      const product = await db.select().from(db.products).where(eq(db.products.id, id))
+      const product = await db.select().from(products).where(eq(products.id, id))
       return c.json({ data: product[0] })
     } catch (error) {
       return c.json({ error: 'Product not found' }, 404)
@@ -42,7 +41,7 @@ export const createProductRoutes = (app: Hono) => {
     try {
       const db = getDB(c.env)
       const body = await c.req.json()
-      const result = await db.insert(db.products).values(body).returning()
+      const result = await db.insert(products).values(body).returning()
       return c.json({ data: result[0] }, 201)
     } catch (error) {
       return c.json({ error: 'Failed to create product' }, 400)
@@ -55,7 +54,7 @@ export const createProductRoutes = (app: Hono) => {
       const db = getDB(c.env)
       const id = parseInt(c.req.param('id'))
       const body = await c.req.json()
-      const result = await db.update(db.products).set(body).where(eq(db.products.id, id)).returning()
+      const result = await db.update(products).set(body).where(eq(products.id, id)).returning()
       return c.json({ data: result[0] })
     } catch (error) {
       return c.json({ error: 'Failed to update product' }, 400)
@@ -67,7 +66,7 @@ export const createProductRoutes = (app: Hono) => {
     try {
       const db = getDB(c.env)
       const id = parseInt(c.req.param('id'))
-      await db.delete(db.products).where(eq(db.products.id, id))
+      await db.delete(products).where(eq(products.id, id))
       return c.json({ data: { success: true } })
     } catch (error) {
       return c.json({ error: 'Failed to delete product' }, 500)

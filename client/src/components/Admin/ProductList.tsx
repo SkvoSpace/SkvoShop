@@ -1,5 +1,5 @@
 import React from 'react'
-import { Product } from '../../../types'
+import { Product } from '../../types'
 import { formatPrice } from '../../lib/utils'
 import { Edit2, Trash2 } from 'lucide-react'
 
