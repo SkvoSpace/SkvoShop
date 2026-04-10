@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import { useContext } from 'react'
-import { AppContext } from '../types'
 import { ProductForm } from '../components/Admin/ProductForm'
 import { ProductList } from '../components/Admin/ProductList'
 import { Product } from '../types'
@@ -23,7 +21,7 @@ export const Admin: React.FC = () => {
     }
   }
 
-  const handleSubmit = async (data: Partial<Product>) => {
+  const handleSubmit = async (data: Partial<Product>): Promise<void> => {
     try {
       if (editingProduct) {
         // Update
@@ -36,6 +34,8 @@ export const Admin: React.FC = () => {
           setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...data } as Product : p))
           setEditingProduct(undefined)
           setShowForm(false)
+        } else {
+          alert('Failed to update product')
         }
       } else {
         // Create
@@ -45,23 +45,31 @@ export const Admin: React.FC = () => {
           body: JSON.stringify(data)
         })
         if (response.ok) {
-          const newProduct = await response.json()
+          const newProduct = await response.json() as Product
           setProducts([...products, newProduct])
           setShowForm(false)
+        } else {
+          alert('Failed to create product')
         }
       }
     } catch (error) {
       console.error('Error:', error)
+      alert('An error occurred. Please try again.')
     }
   }
 
-  const handleDelete = async (productId: number) => {
+  const handleDelete = async (productId: number): Promise<void> => {
     if (confirm('Delete this product?')) {
       try {
-        await fetch(`/api/products/${productId}`, { method: 'DELETE' })
-        setProducts(products.filter(p => p.id !== productId))
+        const response = await fetch(`/api/products/${productId}`, { method: 'DELETE' })
+        if (response.ok) {
+          setProducts(products.filter(p => p.id !== productId))
+        } else {
+          alert('Failed to delete product')
+        }
       } catch (error) {
         console.error('Error:', error)
+        alert('An error occurred. Please try again.')
       }
     }
   }

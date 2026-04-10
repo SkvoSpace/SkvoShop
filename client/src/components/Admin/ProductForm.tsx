@@ -6,7 +6,10 @@ interface ProductFormProps {
   onSubmit: (data: Partial<Product>) => void
 }
 
-export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
+export const ProductForm: React.FC<ProductFormProps> = ({
+  product,
+  onSubmit
+}): JSX.Element => {
   const [formData, setFormData] = useState({
     name: product?.name || '',
     description: product?.description || '',
@@ -16,7 +19,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) =
     featured: product?.featured || false
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     onSubmit(formData)
   }
@@ -28,7 +31,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) =
         <input
           type="text"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData({ ...formData, name: e.target.value })
+          }
           required
           className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500"
         />
@@ -38,7 +43,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) =
         <label className="block text-sm font-medium text-gray-700">Description</label>
         <textarea
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
           rows={3}
           className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500"
         />
@@ -50,7 +57,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) =
           <input
             type="number"
             value={formData.price}
-            onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData({ ...formData, price: parseFloat(e.target.value) })
+            }
             required
             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500"
           />
@@ -59,7 +68,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) =
           <label className="block text-sm font-medium text-gray-700">Category</label>
           <select
             value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setFormData({ ...formData, category: e.target.value })
+            }
             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500"
           >
             <option>clothes</option>
@@ -75,7 +86,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) =
         <input
           type="url"
           value={formData.image}
-          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData({ ...formData, image: e.target.value })
+          }
           className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-purple-500"
         />
       </div>
