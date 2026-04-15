@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from 'react';
 import { ProductForm } from '../components/Admin/ProductForm';
 import { ProductList } from '../components/Admin/ProductList';
 import { AppContext } from '../types';
+import { useApi } from '../hooks/useApi';
+const API_URL = import.meta.env.VITE_API_URL || 'https://skvoshop.skvo-space.workers.dev';
 const featureFromString = (value = '') => {
     const [title = '', text = '', icon = 'sparkles'] = value.split('|').map(item => item.trim());
     return { title, text, icon };
@@ -31,18 +33,12 @@ export const Admin = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const response = await fetch('/api/products');
-            if (response.ok) {
-                const data = await response.json();
-                setProducts(data.data || []);
-            }
-            else {
-                alert('Failed to load products');
-            }
+            const data = await useApi('/api/products');
+            setProducts(data || []);
         }
         catch (error) {
             console.error('Error loading products:', error);
-            alert('Error loading products');
+            alert('Failed to load products');
         }
         finally {
             setLoading(false);
@@ -62,7 +58,7 @@ export const Admin = () => {
     const handleSubmit = async (data) => {
         try {
             if (editingProduct) {
-                const response = await fetch(`/api/products/${editingProduct.id}`, {
+                const response = await fetch(`${API_URL}/api/products/${editingProduct.id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -71,7 +67,8 @@ export const Admin = () => {
                     body: JSON.stringify(data)
                 });
                 if (response.ok) {
-                    setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...data } : p));
+                    const result = await response.json();
+                    setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...result.data } : p));
                     setEditingProduct(undefined);
                     setShowForm(false);
                 }
@@ -80,7 +77,7 @@ export const Admin = () => {
                 }
             }
             else {
-                const response = await fetch('/api/products', {
+                const response = await fetch(`${API_URL}/api/products`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -89,8 +86,8 @@ export const Admin = () => {
                     body: JSON.stringify(data)
                 });
                 if (response.ok) {
-                    const newProduct = await response.json();
-                    setProducts([...products, newProduct]);
+                    const result = await response.json();
+                    setProducts([...products, result.data]);
                     setShowForm(false);
                 }
                 else {
@@ -106,7 +103,7 @@ export const Admin = () => {
     const handleDelete = async (productId) => {
         if (confirm('Delete this product?')) {
             try {
-                const response = await fetch(`/api/products/${productId}`, {
+                const response = await fetch(`${API_URL}/api/products/${productId}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': 'Bearer 12345' }
                 });
