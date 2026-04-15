@@ -1,6 +1,7 @@
 name = "skvoshop-pages"
 account_id = "597c1fefe43cf2f788fb8ef4e6eb1e57"
 compatibility_date = "2024-01-01"
+pages_build_output_dir = "client/dist"
 
 # Pages build configuration
 [build]
