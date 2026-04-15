@@ -8,11 +8,6 @@ export interface Product {
     category: string;
     featured: boolean;
 }
-export interface SiteContent {
-    id: number;
-    key: string;
-    value: string;
-}
 export interface CartItem {
     product: Product;
     quantity: number;
@@ -24,6 +19,7 @@ interface AppContextType {
     removeFromCart: (productId: number) => void;
     clearCart: () => void;
     siteContent: Record<string, string>;
+    updateSiteContent: (content: Record<string, string>) => void;
 }
 export declare const AppContext: React.Context<AppContextType | undefined>;
 export declare const AppProvider: React.FC<{

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X, ShoppingCart } from 'lucide-react'
+import { AppContext } from '../../types'
 
 interface HeaderProps {
   cartCount: number
@@ -8,6 +9,13 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ cartCount }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const context = useContext(AppContext)
+
+  const brand = context?.siteContent.brand || 'FashionBrand'
+  const homeLabel = context?.siteContent.menuHome || 'Home'
+  const shopLabel = context?.siteContent.menuShop || 'Shop'
+  const galleryLabel = context?.siteContent.menuGallery || 'Gallery'
+  const adminLabel = context?.siteContent.menuAdmin || 'Admin'
 
   return (
     <header className="bg-black text-white sticky top-0 z-50 shadow-lg">
@@ -16,22 +24,22 @@ export const Header: React.FC<HeaderProps> = ({ cartCount }) => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 text-2xl font-bold">
             <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded"></div>
-            <span>FashionBrand</span>
+            <span>{brand}</span>
           </Link>
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex space-x-8">
             <Link to="/" className="hover:text-purple-400 transition">
-              Home
+              {homeLabel}
             </Link>
             <Link to="/shop" className="hover:text-purple-400 transition">
-              Shop
+              {shopLabel}
             </Link>
             <Link to="/gallery" className="hover:text-purple-400 transition">
-              Gallery
+              {galleryLabel}
             </Link>
             <Link to="/admin" className="hover:text-purple-400 transition">
-              Admin
+              {adminLabel}
             </Link>
           </nav>
 
@@ -64,28 +72,28 @@ export const Header: React.FC<HeaderProps> = ({ cartCount }) => {
               className="block py-2 hover:text-purple-400 transition"
               onClick={() => setIsOpen(false)}
             >
-              Home
+              {homeLabel}
             </Link>
             <Link
               to="/shop"
               className="block py-2 hover:text-purple-400 transition"
               onClick={() => setIsOpen(false)}
             >
-              Shop
+              {shopLabel}
             </Link>
             <Link
               to="/gallery"
               className="block py-2 hover:text-purple-400 transition"
               onClick={() => setIsOpen(false)}
             >
-              Gallery
+              {galleryLabel}
             </Link>
             <Link
               to="/admin"
               className="block py-2 hover:text-purple-400 transition"
               onClick={() => setIsOpen(false)}
             >
-              Admin
+              {adminLabel}
             </Link>
           </nav>
         )}
