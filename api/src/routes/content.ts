@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { eq } from 'drizzle-orm'
 import { getDB } from '../db'
 import { siteContent } from '../db/schema'
+import { authMiddleware } from '../middleware/auth'
 
 export const createContentRoutes = (app: Hono) => {
   // GET all content
@@ -27,8 +28,8 @@ export const createContentRoutes = (app: Hono) => {
     }
   })
 
-  // PUT update content
-  app.put('/content/:key', async (c) => {
+  // PUT update content (protected)
+  app.put('/content/:key', authMiddleware(), async (c) => {
     try {
       const db = getDB(c.env)
       const key = c.req.param('key')

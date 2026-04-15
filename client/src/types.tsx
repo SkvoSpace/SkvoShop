@@ -33,29 +33,43 @@ interface AppContextType {
 export const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>([])
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    const saved = localStorage.getItem('cart')
+    return saved ? JSON.parse(saved) : []
+  })
   const [products] = useState<Product[]>([])
   const [siteContent] = useState<Record<string, string>>({})
 
   const addToCart = (product: Product, quantity: number) => {
     setCart(prev => {
       const existing = prev.find(item => item.product.id === product.id)
+      let newCart
       if (existing) {
-        return prev.map(item =>
+        newCart = prev.map(item =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         )
+      } else {
+        newCart = [...prev, { product, quantity }]
       }
-      return [...prev, { product, quantity }]
+      localStorage.setItem('cart', JSON.stringify(newCart))
+      return newCart
     })
   }
 
   const removeFromCart = (productId: number) => {
-    setCart(prev => prev.filter(item => item.product.id !== productId))
+    setCart(prev => {
+      const newCart = prev.filter(item => item.product.id !== productId)
+      localStorage.setItem('cart', JSON.stringify(newCart))
+      return newCart
+    })
   }
 
-  const clearCart = () => setCart([])
+  const clearCart = () => {
+    setCart([])
+    localStorage.removeItem('cart')
+  }
 
   return (
     <AppContext.Provider value={{ products, cart, addToCart, removeFromCart, clearCart, siteContent }}>

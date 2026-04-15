@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ProductForm } from '../components/Admin/ProductForm'
 import { ProductList } from '../components/Admin/ProductList'
 import { Product } from '../types'
@@ -9,12 +9,30 @@ export const Admin: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [editingProduct, setEditingProduct] = useState<Product | undefined>()
   const [showForm, setShowForm] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleLogin = (e: React.FormEvent) => {
+  const fetchProducts = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/products')
+      if (response.ok) {
+        const data = await response.json()
+        setProducts(data.data || [])
+      } else {
+        alert('Failed to load products')
+      }
+    } catch (error) {
+      console.error('Error loading products:', error)
+      alert('Error loading products')
+    } finally {
+      setLoading(false)
+    }
+  }
     e.preventDefault()
     if (password === '12345') {
       setIsAuthed(true)
       setPassword('')
+      fetchProducts()
     } else {
       alert('Invalid password!')
     }
@@ -26,7 +44,10 @@ export const Admin: React.FC = () => {
         // Update
         const response = await fetch(`/api/products/${editingProduct.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 12345'
+          },
           body: JSON.stringify(data)
         })
         if (response.ok) {
@@ -40,7 +61,10 @@ export const Admin: React.FC = () => {
         // Create
         const response = await fetch('/api/products', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 12345'
+          },
           body: JSON.stringify(data)
         })
         if (response.ok) {
@@ -60,7 +84,10 @@ export const Admin: React.FC = () => {
   const handleDelete = async (productId: number): Promise<void> => {
     if (confirm('Delete this product?')) {
       try {
-        const response = await fetch(`/api/products/${productId}`, { method: 'DELETE' })
+        const response = await fetch(`/api/products/${productId}`, { 
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer 12345' }
+        })
         if (response.ok) {
           setProducts(products.filter(p => p.id !== productId))
         } else {
@@ -142,14 +169,18 @@ export const Admin: React.FC = () => {
 
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold mb-4">Products</h2>
-            <ProductList
-              products={products}
-              onEdit={(product) => {
-                setEditingProduct(product)
-                setShowForm(true)
-              }}
-              onDelete={handleDelete}
-            />
+            {loading ? (
+              <div className="text-center py-8">Loading products...</div>
+            ) : (
+              <ProductList
+                products={products}
+                onEdit={(product) => {
+                  setEditingProduct(product)
+                  setShowForm(true)
+                }}
+                onDelete={handleDelete}
+              />
+            )}
           </div>
         </div>
       </div>

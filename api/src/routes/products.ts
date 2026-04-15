@@ -2,9 +2,10 @@ import { Hono } from 'hono'
 import { eq } from 'drizzle-orm'
 import { getDB } from '../db'
 import { products } from '../db/schema'
+import { authMiddleware } from '../middleware/auth'
 
 export const createProductRoutes = (app: Hono) => {
-  // GET all products
+  // GET all products (public)
   app.get('/products', async (c) => {
     try {
       const db = getDB(c.env)
@@ -36,11 +37,23 @@ export const createProductRoutes = (app: Hono) => {
     }
   })
 
-  // POST create product
-  app.post('/products', async (c) => {
+  // POST create product (protected)
+  app.post('/products', authMiddleware(), async (c) => {
     try {
       const db = getDB(c.env)
       const body = await c.req.json()
+      
+      // Basic validation
+      if (!body.name || typeof body.name !== 'string' || body.name.trim() === '') {
+        return c.json({ error: 'Name is required and must be a non-empty string' }, 400)
+      }
+      if (!body.price || typeof body.price !== 'number' || body.price <= 0) {
+        return c.json({ error: 'Price is required and must be a positive number' }, 400)
+      }
+      if (!body.category || typeof body.category !== 'string') {
+        return c.json({ error: 'Category is required and must be a string' }, 400)
+      }
+      
       const result = await db.insert(products).values(body).returning()
       return c.json({ data: result[0] }, 201)
     } catch (error) {
@@ -48,12 +61,24 @@ export const createProductRoutes = (app: Hono) => {
     }
   })
 
-  // PUT update product
-  app.put('/products/:id', async (c) => {
+  // PUT update product (protected)
+  app.put('/products/:id', authMiddleware(), async (c) => {
     try {
       const db = getDB(c.env)
       const id = parseInt(c.req.param('id'))
       const body = await c.req.json()
+      
+      // Basic validation
+      if (body.name !== undefined && (typeof body.name !== 'string' || body.name.trim() === '')) {
+        return c.json({ error: 'Name must be a non-empty string' }, 400)
+      }
+      if (body.price !== undefined && (typeof body.price !== 'number' || body.price <= 0)) {
+        return c.json({ error: 'Price must be a positive number' }, 400)
+      }
+      if (body.category !== undefined && typeof body.category !== 'string') {
+        return c.json({ error: 'Category must be a string' }, 400)
+      }
+      
       const result = await db.update(products).set(body).where(eq(products.id, id)).returning()
       return c.json({ data: result[0] })
     } catch (error) {
@@ -61,8 +86,8 @@ export const createProductRoutes = (app: Hono) => {
     }
   })
 
-  // DELETE product
-  app.delete('/products/:id', async (c) => {
+  // DELETE product (protected)
+  app.delete('/products/:id', authMiddleware(), async (c) => {
     try {
       const db = getDB(c.env)
       const id = parseInt(c.req.param('id'))
