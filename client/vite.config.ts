@@ -12,6 +12,6 @@ export default defineConfig({
     }
   },
   define: {
-    'process.env.VITE_API_URL': JSON.stringify('https://skvoshop.skvo-space.workers.dev')
+    'import.meta.env.VITE_API_URL': JSON.stringify('https://skvoshop.skvo-space.workers.dev')
   }
 })
