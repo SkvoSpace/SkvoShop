@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { getDB } from '../db';
 import { siteContent } from '../db/schema';
+import { authMiddleware } from '../middleware/auth';
 export const createContentRoutes = (app) => {
     // GET all content
     app.get('/content', async (c) => {
@@ -25,8 +26,8 @@ export const createContentRoutes = (app) => {
             return c.json({ error: 'Content not found' }, 404);
         }
     });
-    // PUT update content
-    app.put('/content/:key', async (c) => {
+    // PUT update content (protected)
+    app.put('/content/:key', authMiddleware(), async (c) => {
         try {
             const db = getDB(c.env);
             const key = c.req.param('key');

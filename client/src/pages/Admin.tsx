@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { ProductForm } from '../components/Admin/ProductForm'
 import { ProductList } from '../components/Admin/ProductList'
 import { Product } from '../types'
@@ -28,6 +28,8 @@ export const Admin: React.FC = () => {
       setLoading(false)
     }
   }
+
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     if (password === '12345') {
       setIsAuthed(true)
