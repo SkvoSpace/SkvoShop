@@ -15,6 +15,7 @@ export const ProductList: React.FC<ProductListProps> = ({ products, onEdit, onDe
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-200">
+            <th className="border p-2 text-left">Image</th>
             <th className="border p-2 text-left">Name</th>
             <th className="border p-2 text-left">Category</th>
             <th className="border p-2 text-left">Price</th>
@@ -25,6 +26,13 @@ export const ProductList: React.FC<ProductListProps> = ({ products, onEdit, onDe
         <tbody>
           {products.map(product => (
             <tr key={product.id} className="hover:bg-gray-50">
+              <td className="border p-2">
+                <img
+                  src={product.image || 'https://via.placeholder.com/80?text=No+Image'}
+                  alt={product.name}
+                  className="h-12 w-12 rounded object-cover"
+                />
+              </td>
               <td className="border p-2">{product.name}</td>
               <td className="border p-2">{product.category}</td>
               <td className="border p-2">{formatPrice(product.price)}</td>

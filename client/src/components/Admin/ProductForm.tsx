@@ -22,10 +22,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   })
   const [imagePreview, setImagePreview] = useState<string>(product?.image || '')
   const [uploadMode, setUploadMode] = useState<'url' | 'file'>('url')
+  const [imageError, setImageError] = useState('')
+  const [imageFileName, setImageFileName] = useState('')
 
   const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    const maxSize = 2 * 1024 * 1024
+    if (file.size > maxSize) {
+      setImageError('Image must be 2MB or smaller.')
+      return
+    }
+
+    setUploadMode('file')
+    setImageError('')
+    setImageFileName(file.name)
 
     const reader = new FileReader()
     reader.onload = (event) => {
@@ -40,6 +52,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     const url = e.target.value
     setFormData({ ...formData, image: url })
     setImagePreview(url)
+
+    if (!url) {
+      setImageError('')
+      return
+    }
+
+    try {
+      new URL(url)
+      setImageError('')
+    } catch {
+      setImageError('Please enter a valid image URL.')
+    }
   }
 
   const triggerFileInput = (): void => {
@@ -48,6 +72,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
+
+    if (imageError) {
+      alert(imageError)
+      return
+    }
+
     onSubmit(formData)
   }
 
@@ -126,7 +156,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         <div className="flex gap-2 mb-4">
           <button
             type="button"
-            onClick={() => setUploadMode('url')}
+            onClick={() => {
+              setUploadMode('url')
+              setImageError('')
+            }}
             className={`px-4 py-2 rounded font-medium transition ${
               uploadMode === 'url'
                 ? 'bg-purple-600 text-white'
@@ -137,7 +170,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => setUploadMode('file')}
+            onClick={() => {
+              setUploadMode('file')
+              setImageError('')
+            }}
             className={`px-4 py-2 rounded font-medium transition ${
               uploadMode === 'file'
                 ? 'bg-purple-600 text-white'
@@ -175,12 +211,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-purple-300 rounded-md hover:border-purple-500 hover:bg-purple-50 transition"
             >
               <Upload size={20} className="text-purple-600" />
-              <span className="text-purple-600 font-medium">Click to browse or drag & drop</span>
+              <span className="text-purple-600 font-medium">Click to browse</span>
             </button>
-            <p className="text-xs text-gray-500 mt-2">Supported formats: JPG, PNG, WebP, GIF</p>
+            {imageFileName && (
+              <p className="text-sm text-gray-700 mt-2">Selected file: {imageFileName}</p>
+            )}
+            <p className="text-xs text-gray-500 mt-2">Supported formats: JPG, PNG, WebP, GIF. Max 2MB.</p>
           </div>
         )}
       </div>
+
+      {imageError && (
+        <div className="rounded-md bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+          {imageError}
+        </div>
+      )}
 
       <div className="flex items-center">
         <input

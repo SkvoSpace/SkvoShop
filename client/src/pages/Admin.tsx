@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ProductForm } from '../components/Admin/ProductForm'
 import { ProductList } from '../components/Admin/ProductList'
 import { Product, AppContext } from '../types'
+import { useApi } from '../hooks/useApi'
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://skvoshop.skvo-space.workers.dev'
 
 type AdminSection = 'products' | 'pages' | 'menu' | 'footer' | 'gallery' | 'carousel'
 
@@ -38,16 +41,11 @@ export const Admin: React.FC = () => {
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/products')
-      if (response.ok) {
-        const data = await response.json()
-        setProducts(data.data || [])
-      } else {
-        alert('Failed to load products')
-      }
+      const data = await useApi<Product[]>('/api/products')
+      setProducts(data || [])
     } catch (error) {
       console.error('Error loading products:', error)
-      alert('Error loading products')
+      alert('Failed to load products')
     } finally {
       setLoading(false)
     }
@@ -67,7 +65,7 @@ export const Admin: React.FC = () => {
   const handleSubmit = async (data: Partial<Product>): Promise<void> => {
     try {
       if (editingProduct) {
-        const response = await fetch(`/api/products/${editingProduct.id}`, {
+        const response = await fetch(`${API_URL}/api/products/${editingProduct.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -76,14 +74,15 @@ export const Admin: React.FC = () => {
           body: JSON.stringify(data)
         })
         if (response.ok) {
-          setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...data } as Product : p))
+          const result = await response.json() as { data: Product }
+          setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...result.data } : p))
           setEditingProduct(undefined)
           setShowForm(false)
         } else {
           alert('Failed to update product')
         }
       } else {
-        const response = await fetch('/api/products', {
+        const response = await fetch(`${API_URL}/api/products`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -92,8 +91,8 @@ export const Admin: React.FC = () => {
           body: JSON.stringify(data)
         })
         if (response.ok) {
-          const newProduct = await response.json() as Product
-          setProducts([...products, newProduct])
+          const result = await response.json() as { data: Product }
+          setProducts([...products, result.data])
           setShowForm(false)
         } else {
           alert('Failed to create product')
@@ -108,7 +107,7 @@ export const Admin: React.FC = () => {
   const handleDelete = async (productId: number): Promise<void> => {
     if (confirm('Delete this product?')) {
       try {
-        const response = await fetch(`/api/products/${productId}`, {
+        const response = await fetch(`${API_URL}/api/products/${productId}`, {
           method: 'DELETE',
           headers: { 'Authorization': 'Bearer 12345' }
         })
