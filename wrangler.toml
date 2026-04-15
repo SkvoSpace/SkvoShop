@@ -1,26 +1,3 @@
 name = "skvoshop-pages"
-account_id = "597c1fefe43cf2f788fb8ef4e6eb1e57"
 compatibility_date = "2024-01-01"
 pages_build_output_dir = "client/dist"
-
-# Pages build configuration
-[build]
-command = "npm run build"
-cwd = "client"
-output_dir = "dist"
-
-# D1 database binding
-# Accessible in your Functions as env.DB
-[[d1_databases]]
-binding = "DB"
-database_name = "skvoshop"  
-database_id = "bee94b12-bb57-488b-b98b-9ae4d65998aa"
-
-# Production environment overrides
-[env.production]
-
-# Workers routes (if you are also deploying as a Worker, not only Pages)
-# Pattern must include zone name and usually /* for all paths
-routes = [
-  { pattern = "skvoshop.skvo-space.workers.dev/*", zone_id = "68317604c5ed80ba27381a079839c9fa" }
-]
